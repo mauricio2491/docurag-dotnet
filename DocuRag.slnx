@@ -1,5 +1,8 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/DocuRag.Chat/DocuRag.Chat.csproj" />
+    <Project Path="src/DocuRag.Core/DocuRag.Core.csproj" />
+    <Project Path="src/DocuRag.Ingestion/DocuRag.Ingestion.csproj" />
+    <Project Path="src/DocuRag.Playground/DocuRag.Playground.csproj" />
   </Folder>
 </Solution>
