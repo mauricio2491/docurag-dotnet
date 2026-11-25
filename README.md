@@ -4,7 +4,7 @@ Sistema de **preguntas y respuestas sobre documentación técnica** construido e
 
 Todo corre en tu propio PC y es gratis: no necesitas cuentas de pago ni claves de API.
 
-> Proyecto de aprendizaje construido día a día en un curso intensivo de IA para desarrolladores .NET. La sección [Prácticas](#prácticas) documenta qué se hizo y qué se aprendió en cada etapa.
+> Proyecto de aprendizaje de IA aplicada en .NET. La sección [Prácticas](#prácticas) documenta qué se construyó y qué se aprendió en cada parte.
 
 ---
 
@@ -27,14 +27,14 @@ Todo corre en tu propio PC y es gratis: no necesitas cuentas de pago ni claves d
 
 ## Estado del proyecto
 
-| Etapa | Tema | Estado |
-|---|---|---|
-| Día 1 | Fundamentos de LLMs y chat de consola | ✅ Hecho |
-| Día 2 | Embeddings, chunking y pipeline de ingesta | ✅ Hecho |
-| Día 3 | RAG completo como API con citas | ✅ Hecho |
-| Día 4 | Tool calling, salida estructurada y agentes | ⏳ Pendiente |
-| Día 5 | Harness de evaluación, telemetría y seguridad | ⏳ Pendiente |
-| Día 6 | Portafolio y documentación final | ⏳ Pendiente |
+| Funcionalidad | Estado |
+|---|---|
+| Fundamentos de LLMs y chat de consola | ✅ Hecho |
+| Embeddings, chunking y pipeline de ingesta | ✅ Hecho |
+| RAG completo como API con citas | ✅ Hecho |
+| Tool calling, salida estructurada y agentes | ⏳ Pendiente |
+| Harness de evaluación, telemetría y seguridad | ⏳ Pendiente |
+| Documentación final | ⏳ Pendiente |
 
 ---
 
@@ -108,8 +108,8 @@ docurag-dotnet/
 │  ├─ DocuRag.Core/            Librería con toda la lógica de RAG
 │  ├─ DocuRag.Ingestion/       Consola: indexa docs/ en Qdrant
 │  ├─ DocuRag.Api/             API web: endpoint POST /ask
-│  ├─ DocuRag.Chat/            Consola: chat simple con el LLM (Día 1)
-│  └─ DocuRag.Playground/      Consola: experimentos con embeddings (Día 2)
+│  ├─ DocuRag.Chat/            Consola: chat simple con el LLM
+│  └─ DocuRag.Playground/      Consola: experimentos con embeddings
 └─ DocuRag.slnx                Solución
 ```
 
@@ -154,7 +154,7 @@ flowchart TD
 | **`qwen2.5:7b`** como LLM | Buen equilibrio entre calidad y velocidad en un PC con 16 GB de RAM; sigue bien instrucciones y soporta tool calling. | `llama3.2:3b`: más rápido pero menos fiable. |
 | **`nomic-embed-text`** para embeddings | Abierto, ligero, 768 dimensiones, bueno en inglés (el idioma de los docs). | `bge-m3`: multilingüe, sería la opción para documentos en español. |
 | **Qdrant** como base vectorial | Dedicada, open source, fácil de correr con Docker, cliente oficial para .NET y panel web para inspeccionar datos. | pgvector (si ya hubiera PostgreSQL), Azure AI Search (si todo estuviera en Azure). |
-| **Chunking por títulos y párrafos, ~2000 caracteres, solapamiento de 1 párrafo** | Respeta la estructura del documento y no corta ideas a la mitad. ~2000 caracteres ≈ 500 tokens, un punto de partida razonable. Se ajustará midiendo en el Día 5. | Cortar cada N caracteres fijos: rompe frases y mezcla secciones. |
+| **Chunking por títulos y párrafos, ~2000 caracteres, solapamiento de 1 párrafo** | Respeta la estructura del documento y no corta ideas a la mitad. ~2000 caracteres ≈ 500 tokens, un punto de partida razonable. Se ajustará midiendo con un harness de evaluación. | Cortar cada N caracteres fijos: rompe frases y mezcla secciones. |
 | **Ids estables** (`MD5(archivo#índice)`) + **upsert** | La ingesta es **idempotente**: ejecutarla varias veces no duplica datos. | `Guid.NewGuid()`: cada ejecución duplicaría todos los puntos. |
 | **Temperatura 0** en las respuestas RAG | Respuestas estables y repetibles, pegadas al contexto. | Temperatura alta: más variedad, más riesgo de inventar. |
 | **Prompt que exige citar y admitir "no lo sé"** | Reduce alucinaciones y permite verificar cada afirmación. | Prompt libre: el modelo completa con lo que "cree" saber. |
@@ -400,10 +400,10 @@ Prueba también una pregunta que **no** está en los documentos, por ejemplo `"W
 ### Otros programas
 
 ```powershell
-# Chat de consola con historial (Día 1). Escribe 'salir' para terminar.
+# Chat de consola con historial. Escribe 'salir' para terminar.
 dotnet run --project src/DocuRag.Chat
 
-# Experimento de similitud entre frases (Día 2)
+# Experimento de similitud entre frases
 dotnet run --project src/DocuRag.Playground
 ```
 
@@ -433,7 +433,7 @@ Por ahora los valores están escritos en el código. Moverlos a `appsettings.jso
 
 Registro de lo construido y aprendido en cada etapa.
 
-### Día 1 · Fundamentos de LLMs y chat de consola
+### Fundamentos de LLMs y chat de consola
 
 **Proyecto:** [`DocuRag.Chat`](src/DocuRag.Chat/Program.cs)
 
@@ -456,7 +456,7 @@ Registro de lo construido y aprendido en cada etapa.
 
 **Conceptos:** LLM, token, ventana de contexto, roles, temperatura, streaming, `IChatClient`.
 
-### Día 2 · Embeddings, chunking e ingesta
+### Embeddings, chunking e ingesta
 
 **Proyectos:** [`DocuRag.Playground`](src/DocuRag.Playground/Program.cs), [`DocuRag.Core`](src/DocuRag.Core), [`DocuRag.Ingestion`](src/DocuRag.Ingestion/Program.cs)
 
@@ -472,7 +472,7 @@ Lo importante: **no se compara texto contra texto**. El modelo de embeddings con
 
 **Conceptos:** embedding, vector, similitud coseno, chunking, solapamiento, metadatos, base vectorial, idempotencia.
 
-### Día 3 · RAG completo como API
+### RAG completo como API
 
 **Proyectos:** [`DocuRag.Core`](src/DocuRag.Core) (`Retriever`, `RagService`), [`DocuRag.Api`](src/DocuRag.Api/Program.cs)
 
@@ -495,9 +495,9 @@ Lo importante: **no se compara texto contra texto**. El modelo de embeddings con
 
 ### Próximas etapas
 
-- **Día 4:** tool calling (que el modelo decida cuándo buscar), salida estructurada con records tipados, agentes, Semantic Kernel / Microsoft Agent Framework, MCP, y el primer ADR.
-- **Día 5:** *harness* de evaluación con xUnit (golden set, recall@5, MRR, LLM-as-judge), telemetría (latencia y tokens), y prueba de *prompt injection*.
-- **Día 6:** versión final del README y preparación del portafolio.
+- **Tool calling y agentes:** que el modelo decida cuándo buscar, salida estructurada con records tipados, agentes, Semantic Kernel / Microsoft Agent Framework, MCP, y el primer ADR.
+- **Evaluación y seguridad:** *harness* de evaluación con xUnit (golden set, recall@5, MRR, LLM-as-judge), telemetría (latencia y tokens), y prueba de *prompt injection*.
+- **Documentación final:** versión final del README.
 
 ---
 
@@ -532,7 +532,7 @@ Son mejoras identificadas, no errores ocultos:
 - **Embeddings centrados en inglés.** Para documentos en español convendría un modelo multilingüe como `bge-m3`.
 - **Configuración en el código.** URLs y nombres de modelo están escritos a mano; deberían ir en `appsettings.json`.
 - **Sin autenticación** en la API.
-- **Sin pruebas automatizadas todavía** (llegan en el Día 5).
+- **Sin pruebas automatizadas todavía** (planificadas como harness de evaluación).
 - **Todos los chunks de un archivo se envían juntos a Ollama.** Con archivos muy grandes conviene enviarlos en lotes.
 - **API de búsqueda obsoleta.** `Retriever` usa `QdrantClient.SearchAsync`, que la versión 1.20 del cliente marca como obsoleta (aviso `CS0618` al compilar). Funciona, pero conviene migrar a `QueryAsync`.
 

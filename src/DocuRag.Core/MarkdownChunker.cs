@@ -4,7 +4,7 @@ namespace DocuRag.Core;
 
 public static class MarkdownChunker
 {
-    // ~2000 caracteres ≈ 500 tokens. Lo ajustarás el día 5 midiendo.
+    // ~2000 caracteres ≈ 500 tokens. Punto de partida: se ajustará midiendo con evaluaciones.
     public static IEnumerable<Chunk> Split(string file, string markdown, int maxChars = 2000)
     {
         markdown = markdown.Replace("\r\n", "\n");
